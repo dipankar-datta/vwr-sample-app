@@ -5,41 +5,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApplicationStatusService {
 
-    private boolean doServe = true;
-
+    private short counter = 0;
 
     public boolean canServe() {
-        return doServe;
+        return counter == 0;
     }
 
-    public String overloadApplication(Integer seconds) {
+    public String overloadApplication(short secondsDuration) {
 
-        if (!doServe) {
-            return "Application is already overloaded";
+        if (secondsDuration <= 0 || secondsDuration > 60) {
+            return "<h2>Invalid overload period. Please provide period between 1 and 60</h2>";
         }
 
-        if (seconds > 60) {
-            return "Not allowed to overload for more then a minute";
+        if (counter > 0) {
+            return "<h2>Application is already overloaded for " + counter + " seconds </h2>";
         }
 
-        if (doServe) {
+        counter = secondsDuration;
 
-            doServe = false;
-
-            Thread thread = new Thread(() -> {
+        Thread thread = new Thread(() -> {
+            while (counter > 0) {
                 try {
-
-                    Thread.sleep(seconds * 1000);
-                    doServe = true;
+                    Thread.sleep(1000);
+                    counter -= 1;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            });
+            }
+        });
 
-            thread.start();
-            return "Application locked for " + seconds + " seconds";
-        }
-
-        return "Unknown status";
+        thread.start();
+        return "<h2>Application overloaded for " + secondsDuration + " seconds</h2>";
     }
 }
