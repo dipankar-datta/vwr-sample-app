@@ -3,41 +3,54 @@
 <head>
     <title>My Application</title>
 
-    <script>document.write('<script type="module"  src="https://vwr-navigator.herokuapp.com/build/vwr-navigator.esm.js?version=' + new Date().getTime() + '"\><\/script>');</script>
-    <script>document.write('<script nomodule=""  src="https://vwr-navigator.herokuapp.com/build/vwr-navigator.js?version=' + new Date().getTime() + '"\><\/script>');</script>
-    <script>document.write('<script type="module" src="https://stencil-example.herokuapp.com/build/stencil-example.esm.js?version=' + new Date().getTime() + '"\><\/script>');</script>
-    <script>document.write('<script nomodule=""  src="https://stencil-example.herokuapp.com/build/stencil-example.js?version=' + new Date().getTime() + '"\><\/script>');</script>
     <script>
-			attachEvents = () => {
-				const filterDOM = document.querySelector("filter-component");
-				filterDOM.addEventListener("filterChange", event => {
-				  console.log(event.detail);
 
-				  applyPieChartFilter(event.detail);
-				  applyColumnChartFilter(event.detail);
-				  applyTableFilter(event.detail)
-				});
-			  }
+        var timeStamp_g = new Date().getTime();
 
+        attachScripts = (src, isModule, timestamp) => {
+            var script = document.createElement('script');
+            script.setAttribute('src',src + '?version=' + timestamp);
+            if (isModule) {
+                script.setAttribute('type', 'module');
+            } else {
+                script.setAttribute('nomodule', '');
+            }
+            document.head.appendChild(script);
+        }
 
-			  applyPieChartFilter = (filter) => {
-				const pieChartDOM = document.querySelector("pie-chart-example");
-				pieChartDOM.setAttribute('country', filter.country);
-				pieChartDOM.setAttribute('year', filter.year);
-			  }
+        attachScripts("https://vwr-navigator.herokuapp.com/build/vwr-navigator.esm.js", true, timeStamp_g);
+        attachScripts("https://vwr-navigator.herokuapp.com/build/vwr-navigator.js", false, timeStamp_g);
+        attachScripts("https://stencil-example.herokuapp.com/build/stencil-example.esm.js", true, timeStamp_g);
+        attachScripts("https://stencil-example.herokuapp.com/build/stencil-example.js", false, timeStamp_g);
 
-			  applyColumnChartFilter = (filter) => {
-				const columnChartDOM = document.querySelector("column-chart-example");
-				columnChartDOM.setAttribute('country', filter.country);
-				columnChartDOM.setAttribute('year', filter.year);
-			  }
+        attachEvents = () => {
+            const filterDOM = document.querySelector("filter-component");
+            filterDOM.addEventListener("filterChange", event => {
+              console.log(event.detail);
+              applyPieChartFilter(event.detail);
+              applyColumnChartFilter(event.detail);
+              applyTableFilter(event.detail)
+            });
+        }
 
-			  applyTableFilter = (filter) => {
-				const tableDOM = document.querySelector("table-example");
-				tableDOM.setAttribute('country', filter.country);
-				tableDOM.setAttribute('year', filter.year);
-			  }
-	  </script>
+        applyPieChartFilter = (filter) => {
+            const pieChartDOM = document.querySelector("pie-chart-example");
+            pieChartDOM.setAttribute('country', filter.country);
+            pieChartDOM.setAttribute('year', filter.year);
+        }
+
+        applyColumnChartFilter = (filter) => {
+            const columnChartDOM = document.querySelector("column-chart-example");
+            columnChartDOM.setAttribute('country', filter.country);
+            columnChartDOM.setAttribute('year', filter.year);
+        }
+
+        applyTableFilter = (filter) => {
+            const tableDOM = document.querySelector("table-example");
+            tableDOM.setAttribute('country', filter.country);
+            tableDOM.setAttribute('year', filter.year);
+        }
+	</script>
     <style>
         .header {
             display: table;
